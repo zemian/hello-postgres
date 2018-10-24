@@ -39,11 +39,13 @@ used in application as automated users.
 
 To update user password:
 
+	psql> \password app1
+	-- OR use SQL command
 	psql> ALTER USER app1 WITH PASSWORD 'secret2';
 
 Or to remove user password:
 
-	psql> ALTER USER app1 WITH PASSWORD '';
+	psql> ALTER USER app1 WITH PASSWORD 's';
 
 
 == Create new database
