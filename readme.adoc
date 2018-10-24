@@ -24,7 +24,9 @@ Also I use Cygwin to execute all commands noted below.
 
 This initialize a new zip installation of a PostgreSQL DB
 with default 'postgres' as superuser. We will use this user
-to create other users and databases.
+to create other users and databases. Notice that I used
+explicit encoding 'UTF8'.
+
 
 == Create new users
 
@@ -35,9 +37,14 @@ This will create two users in the new DB systems. We intend
 to use 'zemian' as DB owner later, and 'app1' user will be
 used in application as automated users.
 
-TODOs:
+To update user password:
 
-* Q: How to remove password from a user?
+	psql> ALTER USER app1 WITH PASSWORD 'secret2';
+
+Or to remove user password:
+
+	psql> ALTER USER app1 WITH PASSWORD '';
+
 
 == Create new database
 
