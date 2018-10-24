@@ -1,0 +1,75 @@
+= PostgreSQL Database Notes
+
+:author Zemian Deng
+:date 2018-10-21
+
+These are my notes on using PostgreSQL db. You will find basic
+DB server setup and applciation development related notes here.
+
+== Download
+
+Go to postgresql.org and Download your DB. 
+
+For Windows develompent, I prefer to use the zip package 
+installation without the need of Admin rights for development 
+purpose. Unzip it into anywhere you like. 
+
+Also I use Cygwin to execute all commands noted below.
+
+== Initialize a new DB Cluster and start server
+
+	cd postgres-10.4/pgsql
+	bin/initdb -U postgres --encoding=UTF8 --pgdata=../pgdata
+	bin/pg_ctl -D ../pgdata -l ../pgdata/server.log start
+
+This initialize a new zip installation of a PostgreSQL DB
+with default 'postgres' as superuser. We will use this user
+to create other users and databases.
+
+== Create new users
+
+	bin/createuser -U postgres -e zemian
+	bin/createuser -U postgres -e -P app1
+
+This will create two users in the new DB systems. We intend
+to use 'zemian' as DB owner later, and 'app1' user will be
+used in application as automated users.
+
+TODOs:
+
+* Q: How to remove password from a user?
+
+== Create new database
+
+	bin/createdb -U postgres -e -O zemian zemiandb
+
+Create a new database and assign 'zemian' as owner.
+We can now login into this new DB:
+
+	bin/psql -U zemian zemiandb
+
+* You can drop the DB and recreate again
+
+	bin/dropdb -U postgres zemiandb
+
+== Add a user to database
+
+	-- Add new user to database
+	GRANT ALL ON DATABASE zemiandb TO app1
+
+	-- Change database owner
+	ALTER DATABASE zemiandb OWNER TO admin2
+
+== Create a DB dump file and restore DB
+
+	bin/pg_dump -U postgres zemiandb > ../zemiandb.dump
+	bin/psql -U postgres zemiandb2 < ../zemiandb.dump
+
+=== Setup `pagila` Example DB
+
+----
+bin/createuser -U postgres pagila
+bin/createdb -U postgres -O pagila pagila
+bin/psql -U pagila pagila < pagila-schema.sql
+bin/psql -U pagila pagila < pagila-data.sql
+----
