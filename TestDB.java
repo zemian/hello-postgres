@@ -1,12 +1,14 @@
 import java.sql.*;
 /*
 Example usage:
-export CLASSPATH=".;`wpath ~/.m2/repository/org/postgresql/postgresql/42.2.5/postgresql-42.2.5.jar`"
 
-java TestDB
+bash> javac TestDB.java
+bash> export CLASSPATH=".;$(cygpath -m ~/.m2/repository/org/postgresql/postgresql/42.2.5/postgresql-42.2.5.jar)"
+bash> java TestDB
 
-Testing PostgreSQL DB
-PostgreSQL 10.4, compiled by Visual C++ build 1800, 64-bit
+	Testing PostgreSQL DB with user=postgres and url=jdbc:postgresql://localhost/postgres
+	SQL=SELECT VERSION()
+	PostgreSQL 10.4, compiled by Visual C++ build 1800, 64-bit
 */
 public class TestDB {
 	public static void main(String[] args) throws Exception {
