@@ -45,7 +45,7 @@ To update user password:
 
 Or to remove user password:
 
-	psql> ALTER USER app1 WITH PASSWORD 's';
+	psql> ALTER USER app1 WITH PASSWORD '';
 
 
 == Create new database
