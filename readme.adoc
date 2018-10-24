@@ -1,7 +1,7 @@
 = PostgreSQL Database Notes
 
 :author Zemian Deng
-:date 2018-10-21
+:date 2018-10-24
 
 These are my notes on using PostgreSQL db. You will find basic
 DB server setup and applciation development related notes here.
