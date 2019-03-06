@@ -97,10 +97,29 @@ You can drop the DB and recreate again
 
 == Setup Sample DB
 
-=== The `pagila` DB
+See https://wiki.postgresql.org/wiki/Sample_Databases
+
+We will create one database `samples` and then create
+separate schema for each DB sample added below:
+
+	createdb -U zemiandb -O zemiandb samples
+	psql -U zemiandb samples
+
+=== The `world` DB
 
 ----
-createdb -U zemiandb -O zemiandb pagila
-psql -U zemiandb pagila < samples/pagila-schema.sql
-psql -U zemiandb pagila < samples/pagila-data.sql
+psql> CREATE SCHEMA world;
+psql> SET SCHEMA 'world';
+psql> \i samples/world.sql
+----
+
+=== The `pagila` DB
+
+Pagila: Based on MySQL's replacement for World, Sakila, which is itself inspired by the Dell DVD Store. 
+
+----
+psql> CREATE SCHEMA pagila;
+psql> SET SCHEMA 'pagila';
+psql> \i samples/pagila-schema.sql
+psql> \i samples/pagila-data.sql
 ----
