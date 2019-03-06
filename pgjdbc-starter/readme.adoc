@@ -1,0 +1,6 @@
+Explore pgjdbc driver
+
+Version used:
+
+	./gradlew -q dependencies|grep postgres
+	+--- org.postgresql:postgresql -> 42.2.5
