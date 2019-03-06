@@ -117,9 +117,16 @@ psql> \i samples/world.sql
 
 Pagila: Based on MySQL's replacement for World, Sakila, which is itself inspired by the Dell DVD Store. 
 
+NOTE: The pagila dump file already set schema to "public". We will load it there
+then rename it into "pagila"
+
 ----
-psql> CREATE SCHEMA pagila;
-psql> SET SCHEMA 'pagila';
 psql> \i samples/pagila-schema.sql
 psql> \i samples/pagila-data.sql
+psql> ALTER SCHEMA public RENAME TO pagila;
+psql> CREATE SCHEMA public;
 ----
+
+=== The `employees` DB
+
+See https://github.com/vrajmohan/pgsql-sample-data/tree/master/employee
