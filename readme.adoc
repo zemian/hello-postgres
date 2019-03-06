@@ -1,9 +1,6 @@
-= PostgreSQL Database Notes
-Zemian Deng
-2018-10-24
+PostgreSQL is an object-relational database management system (ORDBMS) based on POSTGRES, Version 4.2, developed at the University of California at Berkeley Computer Science Department. POSTGRES pioneered many concepts that only became available in some commercial database systems much later.
 
-These are my notes on using PostgreSQL db. You will find basic
-DB server setup and applciation development related notes here.
+https://www.postgresql.org/docs/11/intro-whatis.html
 
 == Download
 
@@ -15,136 +12,86 @@ purpose. Unzip it into anywhere you like.
 
 Also I use Cygwin to execute all commands noted below.
 
-== Initialize a new DB Cluster and start server
+== Setup
 
-	cd postgres-10.4/pgsql
-	bin/initdb -U postgres --encoding=UTF8 --pgdata=../pgdata
-	bin/pg_ctl -D ../pgdata -l ../pgdata/server.log start
+=== Initialize a new DB Cluster and start server
+
+	cd postgres-10.4/pgsql/bin
+	initdb -U postgres --encoding=UTF8 --pgdata=../pgdata
+	pg_ctl -D ../pgdata -l ../pgdata/server.log start
 
 This initialize a new zip installation of a PostgreSQL DB
 with default 'postgres' as superuser. We will use this user
 to create other users and databases. Notice that I used
 explicit encoding 'UTF8'.
 
+Login to client:
 
-== Create new users
+  psql -U postgres
+  # List of all tables
+  > \d
 
-	bin/createuser -U postgres -e zemian
-	bin/createuser -U postgres -e -P app1
+  # List of all databases
+  > \l
 
-This will create two users in the new DB systems. We intend
-to use 'zemian' as DB owner later, and 'app1' user will be
-used in application as automated users.
+  # Help
+  > \?
+
+  # Exit
+  > \q
+
+=== Create new users
+
+	createuser -U postgres -P zemiandb
+
+The `-P` option is used to prompt for password.
 
 To update user password:
 
-	psql> \password app1
+	psql> \password zemiandb
 	-- OR use SQL command
-	psql> ALTER USER app1 WITH PASSWORD 'secret2';
+	psql> ALTER USER zemiandb WITH PASSWORD 'zemiandb123';
 
 Or to remove user password:
 
-	psql> ALTER USER app1 WITH PASSWORD '';
+	psql> ALTER USER zemiandb WITH PASSWORD '';
 
 
-== Create new database
+=== Create new database
 
-	bin/createdb -U postgres -e -O zemian zemiandb
+	createdb -U postgres -O zemiandb zemiandb
 
-Create a new database and assign 'zemian' as owner.
+Create a new database and assign 'zemiandb' as owner.
 We can now login into this new DB:
 
-	bin/psql -U zemian zemiandb
+	psql -U zemiandb zemiandb
 
 * You can drop the DB and recreate again
 
-	bin/dropdb -U postgres zemiandb
-
-== Add a user to database
-
-	-- Add new user to database
-	GRANT ALL ON DATABASE zemiandb TO app1
-
-	-- Change database owner
-	ALTER DATABASE zemiandb OWNER TO admin2
-
-== Create a DB dump file and restore DB
-
-	bin/pg_dump -U postgres zemiandb > ../zemiandb.dump
-	bin/psql -U postgres zemiandb2 < ../zemiandb.dump
-
-=== Setup `pagila` Example DB
-
-----
-bin/createuser -U postgres pagila
-bin/createdb -U postgres -O pagila pagila
-bin/psql -U pagila pagila < pagila-schema.sql
-bin/psql -U pagila pagila < pagila-data.sql
-----
+	dropdb -U postgres zemiandb
 
 == Sample Tables
 
+  psql -U zemiandb zemiandb < samples/test.sql
+
+== Add a new user to database
+
+	-- Add new user to database
+	GRANT ALL ON DATABASE mydb TO zemiandb
+
+	-- Change database owner
+	ALTER DATABASE zemiandb OWNER TO mydb
+
+== Create a DB dump file and restore DB
+
+	pg_dump -U postgres zemiandb > ../zemiandb.dump
+	psql -U postgres zemiandb2 < ../zemiandb.dump
+
+== Setup `pagila` Example DB
+
 ----
--- Notes for PostgreSQL Database (9.6)
--- https://www.postgresql.org/docs/9.6/static/index.html
-
--- Data Types
--- https://www.postgresql.org/docs/9.6/static/datatype.html
-
-/*
-
-CHAR          Fixed length and space padded character string (sql: CHAR)
-VARCHAR       Variable length character string (sql: VARCHAR)
-TEXT          Variable length character large string (sql: TEXT)
-
-INT           Declare integer number (sql: INT 32 bits)
-SMALLINT      16 bits
-BIGINT        64 bits
-SERIAL        Auto increment integer (INT with sequence)
-
-REAL             Declare floating-point number 32 bits
-DOUBLE PRECISION Declare floating-point number 64 bits
-
-NUMERIC(p,s)     Declare fixed-point number (sql: NUMERIC)
-
-DATE          Declare date
-TIME          Declare time
-TIMESTAMP     Declare datetime
-TIMESTAMP WITH TIMEZONE or TIMESTAMPTZ
-              Declare datetime as timezone aware (stored as UTC but convert to client session timezone)
-INTERVAL      Declare period of time difference
-
-BYTEA         Binary data
-
- */
--- test table
-create table test(
-  id       serial primary key,
-  ts       timestamptz default current_timestamp,
-  cat      varchar(10),
-
-  price    numeric(19,4),
-  qty      int,
-
-  txtdata  text,
-  bindata  bytea,
-
-  distx    real,
-  disty    double precision
-);
-insert into test(cat, price, qty) values ('test', 100000.10, 50000),
-                                         ('test', 100000.20, 0),
-                                         ('test', 100000.00, 1),
-                                         ('test', 9977000.3333, 179),
-                                         ('test', 104729.1129, 104729);
-insert into test(cat, bindata, txtdata) values ('test2', E'\\xCAFEBABE', 'CAFEBABE');
-insert into test(cat, bindata) values ('test3', decode(md5(random()::text), 'hex'));
-insert into test(cat, bindata) values ('test3', decode(md5(random()::text), 'hex'));
-insert into test(cat, bindata) values ('test3', decode(md5(random()::text), 'hex'));
-update test set txtdata = encode(bindata, 'hex') where cat = 'test3';
-insert into test(cat, distx, disty) values ('test4', random(), random());
-insert into test(cat, distx, disty) values ('test4', random(), random());
-insert into test(cat, distx, disty) values ('test4', random(), random());
-select sum(price) from test where cat = 'test';
-select * from test order by cat, ts desc;
+createuser -U postgres pagila
+createdb -U postgres -O pagila pagila
+psql -U pagila pagila < pagila-schema.sql
+psql -U pagila pagila < pagila-data.sql
 ----
