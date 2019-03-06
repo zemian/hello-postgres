@@ -34,6 +34,11 @@ Login to client:
   # List of all databases
   > \l
 
+  # To load sql script
+  > \! pwd
+  > \cd my-project
+  > \i my.sql
+
   # Help
   > \?
 
@@ -42,56 +47,60 @@ Login to client:
 
 === Create new users
 
-	createuser -U postgres -P zemiandb
+	createuser -U postgres -P -s zemiandb
 
 The `-P` option is used to prompt for password.
+The `-s` option is to create a "superuser".
 
-To update user password:
+Update user password:
 
 	psql> \password zemiandb
 	-- OR use SQL command
 	psql> ALTER USER zemiandb WITH PASSWORD 'zemiandb123';
 
-Or to remove user password:
+Remove user password:
 
 	psql> ALTER USER zemiandb WITH PASSWORD '';
 
+Update user as superuser:
+
+	psql> ALTER USER zemiandb WITH SUPERUSER;
+
+Add existing user to database
+	GRANT ALL ON DATABASE mydb TO zemiandb;
+
+Change database owner
+	ALTER DATABASE zemiandb OWNER TO mydb;
 
 === Create new database
 
 	createdb -U postgres -O zemiandb zemiandb
 
 Create a new database and assign 'zemiandb' as owner.
+
 We can now login into this new DB:
 
 	psql -U zemiandb zemiandb
 
-* You can drop the DB and recreate again
+You can drop the DB and recreate again
 
 	dropdb -U postgres zemiandb
 
 == Sample Tables
 
-  psql -U zemiandb zemiandb < samples/test.sql
-
-== Add a new user to database
-
-	-- Add new user to database
-	GRANT ALL ON DATABASE mydb TO zemiandb
-
-	-- Change database owner
-	ALTER DATABASE zemiandb OWNER TO mydb
+	psql -U zemiandb zemiandb < samples/test.sql
 
 == Create a DB dump file and restore DB
 
 	pg_dump -U postgres zemiandb > ../zemiandb.dump
 	psql -U postgres zemiandb2 < ../zemiandb.dump
 
-== Setup `pagila` Example DB
+== Setup Sample DB
+
+=== The `pagila` DB
 
 ----
-createuser -U postgres pagila
-createdb -U postgres -O pagila pagila
-psql -U pagila pagila < pagila-schema.sql
-psql -U pagila pagila < pagila-data.sql
+createdb -U zemiandb -O zemiandb pagila
+psql -U zemiandb pagila < samples/pagila-schema.sql
+psql -U zemiandb pagila < samples/pagila-data.sql
 ----
