@@ -130,3 +130,11 @@ psql> CREATE SCHEMA public;
 === The `employees` DB
 
 See https://github.com/vrajmohan/pgsql-sample-data/tree/master/employee
+
+== Database Cluster
+
+A database cluster is a collection of databases that is managed by a single instance of a running database server. After initialization, a database cluster will contain a database named postgres, which is meant as a default database for use by utilities, users and third party applications. 
+
+  $ initdb -D /usr/local/pgsql/data
+
+See https://www.postgresql.org/docs/current/creating-cluster.html
