@@ -138,3 +138,12 @@ A database cluster is a collection of databases that is managed by a single inst
   $ initdb -D /usr/local/pgsql/data
 
 See https://www.postgresql.org/docs/current/creating-cluster.html
+
+== Some Java Libraries and Tools that work with Data
+
+* Java JDBC https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html
+* Spring Data Access https://docs.spring.io/spring/docs/current/spring-framework-reference/data-access.html#jdbc-choose-style
+* Java EE code generator https://jeddict.github.io
+* Java DSL to SQL http://www.jooq.org
+* Java Persistent Framework that's SQL friendly http://www.mybatis.org/mybatis-3/
+* Java Persistent Framework that's HQL friendly (ORM) http://hibernate.org/
